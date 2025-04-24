@@ -54,7 +54,7 @@ jobs:
           make package/kmod-amneziawg/compile V=s -j$(nproc) || true
 
       - name: Upload packages
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: amneziawg-ipk
           path: openwrt/bin/packages/**/base/*.ipk
