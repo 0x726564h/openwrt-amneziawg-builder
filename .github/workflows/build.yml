@@ -58,3 +58,4 @@ jobs:
         with:
           name: amneziawg-ipk
           path: openwrt/bin/packages/**/base/*.ipk
+        
