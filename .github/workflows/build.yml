@@ -20,18 +20,29 @@ jobs:
           wget python3-setuptools rsync subversion swig time \
           xsltproc zlib1g-dev libdeflate-dev libdeflate-tools
 
-    - name: Clone OpenWrt source
+    # Кэшируем OpenWrt
+    - name: Cache OpenWrt source
+      uses: actions/cache@v3
+      with:
+        path: openwrt
+        key: ${{ runner.os }}-openwrt-${{ hashFiles('**/feeds.conf.default') }}
+        restore-keys: |
+          ${{ runner.os }}-openwrt-
+
+    - name: Clone/OpenWrt source
       run: |
-        git clone https://github.com/openwrt/openwrt.git
-        cd openwrt
-        ./scripts/feeds update -a
-        ./scripts/feeds install -a
+        if [ ! -d "openwrt/.git" ]; then
+          git clone https://github.com/openwrt/openwrt.git openwrt
+          cd openwrt
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+        else
+          echo "Using cached OpenWrt"
+        fi
 
     - name: Clone AmneziaWG packages
       run: |
-        git clone https://github.com/amnezia-vpn/amneziawg-openwrt.git packages
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/amnezia-vpn/amneziawg-openwrt-packages.git packages
 
     - name: Copy AmneziaWG packages
       run: |
