@@ -42,7 +42,7 @@ jobs:
 
     - name: Clone AmneziaWG packages
       run: |
-        git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/amnezia-vpn/amneziawg-openwrt-packages.git packages
+        git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/amnezia-vpn/amneziawg-openwrt.git packages
 
     - name: Copy AmneziaWG packages
       run: |
