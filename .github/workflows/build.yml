@@ -29,7 +29,7 @@ jobs:
 
     - name: Clone AmneziaWG packages
       run: |
-        git clone https://github.com/amnezia-vpn/amneziawg-openwrt-packages.git packages
+        git clone https://github.com/amnezia-vpn/amneziawg-openwrt.git packages
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
