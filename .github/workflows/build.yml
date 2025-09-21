@@ -27,6 +27,10 @@ jobs:
         ./scripts/feeds update -a
         ./scripts/feeds install -a
 
+    - name: Clone AmneziaWG packages
+      run: |
+        git clone https://github.com/amnezia-vpn/amneziawg-openwrt-packages.git packages
+
     - name: Copy AmneziaWG packages
       run: |
         mkdir -p openwrt/package/amneziawg
