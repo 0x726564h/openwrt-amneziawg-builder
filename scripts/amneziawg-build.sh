@@ -1,48 +1,51 @@
 #!/bin/bash
-set -e
 
-# Configuration
+# Set variables
 OPENWRT_VERSION="24.10.2"
-TARGET="rockchip/armv8"
-ARCH="aarch64_generic"
+TARGET_ARCH="aarch64_generic"
+KERNEL_VERSION="6.6.93"
 
-# Clone OpenWrt if not exists
+# Update system and install dependencies
+sudo apt-get update
+sudo apt-get install -y \
+    build-essential \
+    clang \
+    flex \
+    bison \
+    g++ \
+    gawk \
+    gcc-multilib \
+    g++-multilib \
+    gettext \
+    git \
+    libncurses5-dev \
+    libssl-dev \
+    python3-distutils \
+    rsync \
+    unzip \
+    zlib1g-dev \
+    file \
+    wget
+
+# Clone OpenWrt
 if [ ! -d "openwrt" ]; then
     git clone https://git.openwrt.org/openwrt/openwrt.git
     cd openwrt
-    git checkout v$OPENWRT_VERSION
+    git checkout v${OPENWRT_VERSION}
 else
-    cd openwrt
-    git fetch
-    git checkout v$OPENWRT_VERSION
+    echo "OpenWrt directory already exists"
 fi
 
-# Add AmneziAWG package
-if [ ! -d "package/amneziawg" ]; then
-    git clone https://github.com/amnezia-vpn/amneziawg-openwrt.git package/amneziawg
+# Clone AmenziaWG
+if [ ! -d "openwrt/package/amneziawg" ]; then
+    git clone https://github.com/amnezia-vpn/amneziawg-openwrt.git openwrt/package/amneziawg
+else
+    echo "AmenziaWG package already exists"
 fi
 
 # Update feeds
+cd openwrt
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
-# Configure build
-cat > .config <<EOF
-CONFIG_TARGET_rockchip=y
-CONFIG_TARGET_rockchip_armv8=y
-CONFIG_TARGET_MULTI_PROFILE=y
-CONFIG_TARGET_ALL_PROFILES=y
-CONFIG_PACKAGE_amneziawg=y
-EOF
-
-make defconfig
-
-# Build
-make package/amneziawg/compile -j$(nproc) V=s
-
-# Copy artifacts
-mkdir -p ../artifacts
-cp bin/packages/$ARCH/base/amneziawg_*.ipk ../artifacts/
-cp logs/package/amneziawg ../artifacts/build.log
-
-echo "Build completed. Packages available in artifacts directory."
+echo "Build environment prepared successfully"
